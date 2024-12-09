@@ -9,25 +9,18 @@ import { ProductCards } from "../components/ProductCards.js";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { useQuery } from "@tanstack/react-query";
+import { Navigate } from "react-router-dom";
 
 export const Home = () => {
-  const [result, setResult] = useState([]);
-  const [load,setLoad]=useState(false);
 
-  useEffect(() => {
-    setLoad(true);
-
-    axios
-      .get("https://fakestoreapi.com/products?limit=8")
-      .then((res) => {
-        setResult(res.data);
-        setLoad(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoad(false);
-      });
-  }, []);
+  const {data:result,isLoading,isError}=useQuery({
+    queryKey:['productFetch'],
+    queryFn:()=>{
+      return axios.get('https://fakestoreapi.com/products?limit=8')
+    },
+    select:(data)=>data.data
+  })
 
   const [responsive, setResponsive] = useState(window.innerWidth);
 
@@ -42,6 +35,9 @@ export const Home = () => {
     };
   }, []);
 
+  if(isError){
+    return <Navigate to="/error"/>
+  }
   return (
     <Box>
       {responsive > 738 ? <Navbar /> : <ResponsiveNavbar />}
@@ -106,7 +102,7 @@ export const Home = () => {
         </Typography>
 
         <Box sx={{ my: 4 }}>
-        {load?<Box className={styles.center}><CircularProgress size={30}/></Box>:<ProductCards result={result} show={false} />}
+        {isLoading?<Box className={styles.center}><CircularProgress size={30}/></Box>:<ProductCards result={result} show={false} />}
         </Box>
       </Box>
       <Footer />

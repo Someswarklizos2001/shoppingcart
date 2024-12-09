@@ -4,10 +4,11 @@ import { ProductCards } from "../components/ProductCards.js";
 import styles from "./Products.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../redux/slice/apiSlice.js";
+import { Navigate } from "react-router-dom";
 
 export const Products = () => {
   
-  const { products, status, error } = useSelector((state) => state.product);
+  const { products, status } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export const Products = () => {
     }
   }, [dispatch, status]);
 
-  if (status === "failed") return <p>Error: {error}</p>;
+  if (status === "failed") return <Navigate to="/error"/>;
 
 
   return (

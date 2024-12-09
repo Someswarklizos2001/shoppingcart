@@ -8,54 +8,48 @@ import {
   Button,
   Skeleton,
 } from "@mui/material";
-import { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./ViewProduct.module.css";
 import StarIcon from "@mui/icons-material/Star";
 import SellIcon from "@mui/icons-material/Sell";
-import { useLocation, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { ProductCards } from "./ProductCards";
 import { useDispatch, useSelector } from "react-redux";
 import { addCart } from "../redux/slice/cartSlice";
-// import { fetchProductsById } from "../redux/slice/viewProductSlice";
-// import { fetchProductsByCategory } from "../redux/slice/viewProductSliceByCategory";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export const ViewProduct = () => {
-  const [result, setResult] = useState([]);
-  const [result1, setResult1] = useState([]);
+ 
+  
   const { id, category } = useParams();
   const { cart_id } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const [load, setLoad] = useState(false);
-  const [loading1, setLoading1] = useState(false);
 
-  const location=useLocation();
+  useEffect(()=>{
 
-  console.log(location)
+    window.scrollTo(0,0);
+  },[id]);
+  
+  const {data:result,isLoading:load,isError}=useQuery({
+    queryKey:['productById',id],
+    queryFn:()=>{
+      return axios.get(`https://fakestoreapi.com/products/${id}`)
+    },
+    select:(data)=>data.data,
+    
+  })
 
-  useEffect(() => {
-    setLoad(true);
-    setLoading1(true);
-    axios
-      .get(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => {
-        setResult(res.data);
-        setLoad(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const {data:result1,isError:error1}=useQuery({
+    queryKey:['DetailsByCategory',category],
+    queryFn:()=>{
+      return axios.get(`https://fakestoreapi.com/products/category/${category}`)
+    },
+    select:(data)=>data.data,
+    
+  })
 
-    axios
-      .get(`https://fakestoreapi.com/products/category/${category}`)
-      .then((res) => {
-        setLoading1(false);
-        setResult1(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [id, category]);
+  if(isError|| error1) return <Navigate to='/error'/>
 
   return (
     <Box>
@@ -188,7 +182,7 @@ export const ViewProduct = () => {
           Similar products you may interested in
         </Typography>
 
-        <ProductCards result={result1} show={false} loading1={loading1} />
+        <ProductCards result={result1} show={false} loading1={load} />
       </Box>
     </Box>
   );

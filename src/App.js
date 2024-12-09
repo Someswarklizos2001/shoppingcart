@@ -5,6 +5,7 @@ import { Protected } from "./components/Protected";
 import { Products } from "./pages/Products";
 import {ViewProduct} from "./components/ViewProduct.js"
 import { Cart } from "./pages/Cart.js";
+import {Error} from './pages/Error.js'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="products" element={<Products/>}/>
           <Route path="view-product/:category/:id" element={<ViewProduct/>}/>
           <Route path="cart" element={<Cart/>}/>
+          <Route path="error" element={<Error/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
