@@ -1,0 +1,31 @@
+::-webkit-scrollbar{
+  width:5px
+}
+
+::-webkit-scrollbar-thumb{
+  background-color:violet;
+  border-radius:20px
+}
+
+#commonStyle{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center
+}
+
+#registerButton{
+  margin-top: 15px;
+  margin-left:50px;
+  padding: 13px;
+  background-color: #4d88d3;
+  border-radius: 29px
+}
+
+#loginButton{
+  margin-top: 15px;
+  margin-left:90px;
+  padding: 13px;
+  background-color: #4d88d3;
+  border-radius: 29px
+}
